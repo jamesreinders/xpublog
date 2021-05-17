@@ -55,14 +55,22 @@ $(BINDIR)/$(EXE_NAME).fpga_emu: $(SOURCES)
 
 submit_fpga:
 	qsub -N xpublog4CompFPGA -l nodes=1:fpga_compile:ppn=2 -d . build_hello.fpga.sh 1> /tmp/id.$(ME)
-	qsub -N xpublog4RunFPGA -W depend=afterany:`cat /tmp/id.$(ME)` -l nodes=1:fpga:ppn=2 -d . run_hello.fpga.sh;
+	qsub -N xpublog4RunFPGA -W depend=afterany:`cat /tmp/id.$(ME)` -l nodes=1:fpga:ppn=2 -d . run_hello.fpga.sh
+
+
+submit_fpga_run:
+	qsub -N xpublog4RunFPGA -l nodes=1:fpga:ppn=2 -d . run_hello.fpga.sh
 
 build_fpga: $(BINDIR)/$(EXE_NAME).fpga
 
 run_fpga: $(BINDIR)/$(EXE_NAME).fpga
 	rm -f EnlightenedNermalWithBook.png
 	cp -p Assets/NermalWithBook540.jpg .
+	hostname
+	date
+	./checksys.sh
 	LD_LIBRARY_PATH=$(TMPFIX):/opt/intel/openvino_2021/opencv/lib:$(LD_LIBRARY_PATH) $(BINDIR)/$(EXE_NAME).fpga
+	date
 	cp -p EnlightenedNermalWithBook.png EnlightenedNermalWithBook.png.from_fpga.png
 
 $(BINDIR)/$(EXE_NAME).fpga: $(BINDIR)/$(EXE_NAME).fpga.o
