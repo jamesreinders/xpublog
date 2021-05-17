@@ -53,10 +53,9 @@ $(BINDIR)/$(EXE_NAME).fpga_emu: $(SOURCES)
 
 
 
-
 submit_fpga:
 	qsub -N xpublog4CompFPGA -l nodes=1:fpga_compile:ppn=2 -d . build_hello.fpga.sh 1> /tmp/id.$(ME)
-	qsub -N xpublog4RunFPGA -W depend=afterany:`cat /tmp/id.$(ME)` -l nodes=1:fpga_runtime:ppn=2 -d . run_hello.fpga.sh;
+	qsub -N xpublog4RunFPGA -W depend=afterany:`cat /tmp/id.$(ME)` -l nodes=1:fpga:ppn=2 -d . run_hello.fpga.sh;
 
 build_fpga: $(BINDIR)/$(EXE_NAME).fpga
 
@@ -67,14 +66,22 @@ run_fpga: $(BINDIR)/$(EXE_NAME).fpga
 	cp -p EnlightenedNermalWithBook.png EnlightenedNermalWithBook.png.from_fpga.png
 
 $(BINDIR)/$(EXE_NAME).fpga: $(BINDIR)/$(EXE_NAME).fpga.o
+	echo 'starting FPGA build'
+	hostname
+	date
+	./checksys.sh
 	$(CXX) $(CXXFLAGS) -fintelfpga $^ -o $@ -Xshardware
+	date
+	echo 'completed FPGA build'
 
 $(BINDIR)/$(EXE_NAME).fpga.o: $(SOURCES)
+	echo 'starting FPGA run'
+	hostname
+	date
+	./checksys.sh
 	$(CXX) $(CXXFLAGS) -fintelfpga -c $^ -o $@ -DFPGA=1
-
-
-
-
+	date
+	echo 'completed FPGA run'
 
 clean: 
 	rm -rf $(BINDIR)/$(EXE_NAME) EnlightenedNermalWithBook.png* NermalWithBook540.jpg
