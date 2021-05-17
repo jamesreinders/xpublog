@@ -66,7 +66,7 @@ run_fpga: $(BINDIR)/$(EXE_NAME).fpga
 	cp -p EnlightenedNermalWithBook.png EnlightenedNermalWithBook.png.from_fpga.png
 
 $(BINDIR)/$(EXE_NAME).fpga: $(BINDIR)/$(EXE_NAME).fpga.o
-	echo 'starting FPGA build'
+	echo 'starting FPGA build part 2 - place and route for real FPGA - 90 minutes give or take'
 	hostname
 	date
 	./checksys.sh
@@ -75,7 +75,7 @@ $(BINDIR)/$(EXE_NAME).fpga: $(BINDIR)/$(EXE_NAME).fpga.o
 	echo 'completed FPGA build'
 
 $(BINDIR)/$(EXE_NAME).fpga.o: $(SOURCES)
-	echo 'starting FPGA run'
+	echo 'starting FPGA build part 1 - compile to object'
 	hostname
 	date
 	./checksys.sh
