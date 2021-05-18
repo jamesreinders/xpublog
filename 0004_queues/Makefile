@@ -4,6 +4,7 @@ EXE_NAME = hello
 SOURCES = lab/hello.cpp
 BINDIR = bin
 OPENCV_OPTIONS = -I /opt/intel/openvino_2021/opencv/include/ -L /opt/intel/openvino_2021/opencv/lib
+XTRALIB = /usr/lib
 TMPFIX = /opt/intel/openvino_2021/deployment_tools/inference_engine/external/tbb/lib
 TMPFIXL = -L $(TMPFIX)
 CXXFLAGS = $(TMPFIXL) -ferror-limit=1 -Wno-pass-failed $(OPENCV_OPTIONS) $(LDFLAGS)
@@ -31,7 +32,7 @@ $(BINDIR)/$(EXE_NAME): $(SOURCES)
 run: $(BINDIR)/$(EXE_NAME)
 	rm -f EnlightenedNermalWithBook.png
 	cp -p Assets/NermalWithBook540.jpg .
-	LD_LIBRARY_PATH=$(TMPFIX):/opt/intel/openvino_2021/opencv/lib:$(LD_LIBRARY_PATH) $(BINDIR)/$(EXE_NAME)
+	LD_LIBRARY_PATH=$(XTRALIB):$(TMPFIX):/opt/intel/openvino_2021/opencv/lib:$(LD_LIBRARY_PATH) $(BINDIR)/$(EXE_NAME)
 	cp -p EnlightenedNermalWithBook.png EnlightenedNermalWithBook.png.from_default.png
 
 
@@ -45,7 +46,7 @@ build_fpga_emu: $(BINDIR)/$(EXE_NAME).fpga_emu
 run_fpga_emu: $(BINDIR)/$(EXE_NAME).fpga_emu
 	rm -f EnlightenedNermalWithBook.png
 	cp -p Assets/NermalWithBook540.jpg .
-	LD_LIBRARY_PATH=$(TMPFIX):/opt/intel/openvino_2021/opencv/lib:$(LD_LIBRARY_PATH) $(BINDIR)/$(EXE_NAME).fpga_emu
+	LD_LIBRARY_PATH=$(XTRALIB):$(TMPFIX):/opt/intel/openvino_2021/opencv/lib:$(LD_LIBRARY_PATH) $(BINDIR)/$(EXE_NAME).fpga_emu
 	cp -p EnlightenedNermalWithBook.png EnlightenedNermalWithBook.png.from_fpga_emu.png
 
 $(BINDIR)/$(EXE_NAME).fpga_emu: $(SOURCES)
@@ -59,7 +60,7 @@ submit_fpga:
 
 
 submit_fpga_run:
-	qsub -N xpublog4RunFPGA -l nodes=1:fpga:ppn=2 -d . run_hello.fpga.sh
+	qsub -N xpublog4RunFPGA -l nodes=1:fpga:stratix10:ppn=2 -d . run_hello.fpga.sh
 
 build_fpga: $(BINDIR)/$(EXE_NAME).fpga
 
@@ -69,7 +70,7 @@ run_fpga: $(BINDIR)/$(EXE_NAME).fpga
 	hostname
 	date
 	./checksys.sh
-	LD_LIBRARY_PATH=$(TMPFIX):/opt/intel/openvino_2021/opencv/lib:$(LD_LIBRARY_PATH) $(BINDIR)/$(EXE_NAME).fpga
+	LD_LIBRARY_PATH=$(XTRALIB):$(TMPFIX):/opt/intel/openvino_2021/opencv/lib:$(LD_LIBRARY_PATH) $(BINDIR)/$(EXE_NAME).fpga
 	date
 	cp -p EnlightenedNermalWithBook.png EnlightenedNermalWithBook.png.from_fpga.png
 
