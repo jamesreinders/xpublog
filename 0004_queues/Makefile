@@ -56,7 +56,7 @@ $(BINDIR)/$(EXE_NAME).fpga_emu: $(SOURCES)
 
 submit_fpga:
 	qsub -N xpublog4CompFPGA -l nodes=1:fpga_compile:ppn=2 -d . build_hello.fpga.sh 1> /tmp/id.$(ME)
-	qsub -N xpublog4RunFPGA -W depend=afterany:`cat /tmp/id.$(ME)` -l nodes=1:fpga:ppn=2 -d . run_hello.fpga.sh
+	qsub -N xpublog4RunFPGA -W depend=afterany:`cat /tmp/id.$(ME)` -l nodes=1:fpga:stratix10:ppn=2 -d . run_hello.fpga.sh
 
 
 submit_fpga_run:
@@ -79,7 +79,8 @@ $(BINDIR)/$(EXE_NAME).fpga: $(BINDIR)/$(EXE_NAME).fpga.o
 	hostname
 	date
 	./checksys.sh
-	$(CXX) $(CXXFLAGS) -fintelfpga $^ -o $@ -Xshardware
+#	$(CXX) $(CXXFLAGS) -fintelfpga $^ -o $@ -Xshardware
+	$(CXX) $(CXXFLAGS) -fintelfpga $^ -o $@ -Xshardware -Xsboard=pac_s10
 	date
 	echo 'completed FPGA build'
 
@@ -88,7 +89,8 @@ $(BINDIR)/$(EXE_NAME).fpga.o: $(SOURCES)
 	hostname
 	date
 	./checksys.sh
-	$(CXX) $(CXXFLAGS) -fintelfpga -c $^ -o $@ -DFPGA=1
+#	$(CXX) $(CXXFLAGS) -fintelfpga -c $^ -o $@ -DFPGA=1
+	$(CXX) $(CXXFLAGS) -fintelfpga -c $^ -o $@ -DFPGA=1 -Xsboard=pac_s10
 	date
 	echo 'completed FPGA run'
 
