@@ -9,9 +9,9 @@
 #include <iostream>
 #include <algorithm>
 #include <CL/sycl.hpp>
-#if FPGA || FPGA_EMULATOR
+
+  // NEW include FOR THIS EXERCISE - so we can use Intel FPGA as a target
 #include <CL/sycl/INTEL/fpga_extensions.hpp>
-#endif
 
 using namespace cv;
 using namespace std;
@@ -19,22 +19,9 @@ using namespace sycl;
 
 int main(){
   string image_path = "NermalWithBook540.jpg";
-    
-#if 0
-  //drop this line from the prior version
-  //# define queue which has default device associated for offload
-  queue q;
-#endif
 
-  // replace with this logic... ending with a diffent 'queue' declaration
-#if FPGA_EMULATOR
+  // NEW (2 lines) FOR THIS EXERCISE (was just "queue q;" before) - now we use the FPGA emulator
   INTEL::fpga_emulator_selector my_selector;
-#elif FPGA
-  INTEL::fpga_selector my_selector;
-#else
-  default_selector my_selector;
-#endif
-
   queue q( my_selector );
 
   // for this exercise, we did not control what type of device we are offloading to,
@@ -47,17 +34,6 @@ int main(){
     return 1;
   }
 
-#if 0
-  // the SYCL kernel, after the endif, will do the same as this C++ code would do
-  for( int y = 0; y < img.rows; y++ ) {
-    for( int x = 0; x < img.cols; x++ ) {
-      for( int c = 0; c < img.channels(); c++ ) {
-        img.at<Vec3b>(y,x)[c] =
-          clamp( img.at<Vec3b>(y,x)[c] + 50, 0, 255 );
-      }
-    }
-  }
-#endif
   {
     CV_Assert(img.isContinuous());
     CV_CheckTypeEQ(img.type(), CV_8UC3, "");
