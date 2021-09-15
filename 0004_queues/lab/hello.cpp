@@ -20,6 +20,13 @@ using namespace sycl;
 int main(){
   string image_path = "NermalWithBook540.jpg";
     
+#if 0
+  //drop this line from the prior version
+  //# define queue which has default device associated for offload
+  queue q;
+#endif
+
+  // replace with this logic... ending with a diffent 'queue' declaration
 #if FPGA_EMULATOR
   INTEL::fpga_emulator_selector my_selector;
 #elif FPGA
