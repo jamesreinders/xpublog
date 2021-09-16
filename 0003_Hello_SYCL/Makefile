@@ -19,4 +19,4 @@ run:
 	LD_LIBRARY_PATH=$(TMPFIX):/opt/intel/openvino/opencv/lib:$(LD_LIBRARY_PATH) $(BINDIR)/$(EXE_NAME)
 
 clean: 
-	rm -rf $(BINDIR)/$(EXE_NAME)
+	rm -rf $(BINDIR)/$(EXE_NAME) EnlightenedNermalWithBook.png
